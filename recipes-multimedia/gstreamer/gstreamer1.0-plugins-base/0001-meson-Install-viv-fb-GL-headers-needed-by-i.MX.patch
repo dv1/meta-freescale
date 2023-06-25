@@ -1,0 +1,36 @@
+From 681f042f271a89c7a8961750c4cd6ece70b45d23 Mon Sep 17 00:00:00 2001
+From: Nirbheek Chauhan <nirbheek@centricular.com>
+Date: Thu, 9 Mar 2023 00:25:51 +0530
+Subject: [PATCH] meson: Install viv-fb GL headers, needed by i.MX
+
+Needed by qmlglsink at build time to allocate a viv-fb display.
+
+Without this, the GL fastpath doesn't work, and performance is really
+bad.
+
+Part-of: <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4613>
+
+Upstream-Status: Backport [681f042f271a89c7a8961750c4cd6ece70b45d23]
+---
+ gst-libs/gst/gl/meson.build | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/gst-libs/gst/gl/meson.build b/gst-libs/gst/gl/meson.build
+index 9be4f74e2b..3c91efc78e 100644
+--- a/gst-libs/gst/gl/meson.build
++++ b/gst-libs/gst/gl/meson.build
+@@ -929,6 +929,11 @@ if need_platform_egl != 'no' and need_win_viv_fb != 'no'
+         'viv-fb/gstglwindow_viv_fb_egl.c',
+       ]
+       gl_cpp_args += ['-DEGL_API_FB']
++      gl_viv_fb_headers = [
++        'viv-fb/gstgldisplay_viv_fb.h',
++        'viv-fb/gstglwindow_viv_fb_egl.h',
++      ]
++      install_headers(gl_viv_fb_headers, subdir : 'gstreamer-1.0/gst/gl/viv-fb')
+     endif
+   endif
+ endif
+-- 
+2.34.1
+
